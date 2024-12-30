@@ -1,5 +1,6 @@
 namespace AspnetCoreMvcFull.Core.Context;
 
+using AspnetCoreMvcFull.Models;
 using AspnetCoreMvcFull.Models.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,8 @@ using System.Text.RegularExpressions;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
   public DbSet<UserGroup> Groups { get; set; }
-  //public DbSet<Product> Products { get; set; }
+  public DbSet<Product> Products { get; set; }
+  public DbSet<Consumption> Consumptions { get; set; }
 
   public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
