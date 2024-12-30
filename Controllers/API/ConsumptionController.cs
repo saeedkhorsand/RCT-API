@@ -1,12 +1,17 @@
 using AspnetCoreMvcFull.Core.Context;
+using AspnetCoreMvcFull.Models;
+using AspnetCoreMvcFull.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ConsumptionController : ControllerBase
 {
   private readonly ApplicationDbContext _context;
@@ -20,11 +25,7 @@ public class ConsumptionController : ControllerBase
   [HttpPost("add")]
   public async Task<IActionResult> AddConsumption([FromBody] AddConsumptionRequest request)
   {
-    var user = await _context.Users.FindAsync(request.UserId);
-    if (user == null)
-    {
-      return NotFound("User not found.");
-    }
+    var userId = GetUserId();
 
     var product = await _context.Products.FindAsync(request.ProductId);
     if (product == null)
@@ -34,8 +35,8 @@ public class ConsumptionController : ControllerBase
 
     var consumption = new Consumption
     {
-      UserId = request.UserId,
-      ProductId = request.ProductId,
+      UserId = userId,
+      ProductId = request.ProductId ?? 0,
       ConsumptionTime = request.ConsumptionTime,
       Quantity = request.Quantity
     };
@@ -47,9 +48,10 @@ public class ConsumptionController : ControllerBase
   }
 
   // دریافت تاریخچه مصرف روز جاری
-  [HttpGet("today/{userId}")]
-  public async Task<IActionResult> GetTodayConsumption(int userId)
+  [HttpGet("today")]
+  public async Task<IActionResult> GetTodayConsumption()
   {
+    var userId = GetUserId();
     var today = DateTime.Today;
 
     var consumptions = await _context.Consumptions
@@ -57,7 +59,7 @@ public class ConsumptionController : ControllerBase
         .Include(c => c.Product)
         .ToListAsync();
 
-    if (consumptions == null || !consumptions.Any())
+    if (!consumptions.Any())
     {
       return NotFound("No consumption records found for today.");
     }
@@ -66,16 +68,18 @@ public class ConsumptionController : ControllerBase
   }
 
   // دریافت تاریخچه مصرف کامل
-  [HttpGet("all/{userId}")]
-  public async Task<IActionResult> GetAllConsumptions(int userId)
+  [HttpGet("all")]
+  public async Task<IActionResult> GetAllConsumptions()
   {
+    var userId = GetUserId();
+
     var consumptions = await _context.Consumptions
         .Where(c => c.UserId == userId)
         .Include(c => c.Product)
         .OrderByDescending(c => c.ConsumptionTime)
         .ToListAsync();
 
-    if (consumptions == null || !consumptions.Any())
+    if (!consumptions.Any())
     {
       return NotFound("No consumption records found.");
     }
@@ -87,7 +91,11 @@ public class ConsumptionController : ControllerBase
   [HttpPut("update/{id}")]
   public async Task<IActionResult> UpdateConsumption(int id, [FromBody] UpdateConsumptionRequest request)
   {
-    var consumption = await _context.Consumptions.FindAsync(id);
+    var userId = GetUserId();
+
+    var consumption = await _context.Consumptions
+        .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+
     if (consumption == null)
     {
       return NotFound("Consumption record not found.");
@@ -106,5 +114,18 @@ public class ConsumptionController : ControllerBase
     await _context.SaveChangesAsync();
 
     return Ok("Consumption updated successfully.");
+  }
+
+  // متد کمکی برای گرفتن UserId از JWT
+  private int GetUserId()
+  {
+    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+    if (int.TryParse(userIdClaim, out var userId))
+    {
+      return userId;
+    }
+
+    throw new UnauthorizedAccessException("User ID not found in token.");
   }
 }
