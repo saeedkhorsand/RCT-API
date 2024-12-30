@@ -1,7 +1,6 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using AspnetCoreMvcFull.Models;
-
+using AspnetCoreMvcFull.Models.ViewModels;
 namespace AspnetCoreMvcFull.Controllers;
 
 public class HomeController : Controller
