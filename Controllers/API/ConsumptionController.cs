@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -117,15 +118,11 @@ public class ConsumptionController : ControllerBase
   }
 
   // متد کمکی برای گرفتن UserId از JWT
-  private Guid GetUserId()
+  private string GetUserId()
   {
     var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-    if (Guid.TryParse(userIdClaim, out var userId))
-    {
-      return userId;
-    }
-
-    throw new UnauthorizedAccessException("User ID not found in token.");
+    if (userIdClaim == null)
+      throw new AuthenticationException("User ID not found in token.");
+    return userIdClaim.ToString();
   }
 }
