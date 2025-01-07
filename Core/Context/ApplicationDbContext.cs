@@ -4,6 +4,7 @@ using AspnetCoreMvcFull.Models;
 using AspnetCoreMvcFull.Models.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -13,6 +14,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
   public DbSet<Consumption> Consumptions { get; set; }
 
   public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+  public ApplicationDbContext() { }
 
   protected override void OnModelCreating(ModelBuilder builder)
   {
@@ -28,6 +30,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     .HasOne(c => c.User)
     .WithMany()
     .HasForeignKey(c => c.UserId)
+    .IsRequired();
+
+    builder.Entity<Consumption>()
+    .HasOne(c => c.Product)
+    .WithMany()
+    .HasForeignKey(c => c.ProductId)
     .IsRequired();
     /*    builder.Entity<Product>().HasData(
             new Product { Id = 1, Name = "شیر کم‌چرب", GroupId = 1 },
