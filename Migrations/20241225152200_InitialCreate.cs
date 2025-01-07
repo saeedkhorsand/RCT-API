@@ -184,8 +184,8 @@ namespace AspnetCoreMvcFull.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "شیر" },
-                    { 2, "ماست" }
+                    { 1, "Milk" },
+                    { 2, "Yogurt" }
                 });
 
             migrationBuilder.CreateIndex(

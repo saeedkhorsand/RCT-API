@@ -21,10 +21,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     base.OnModelCreating(builder);
 
     // Seed Data
-    builder.Entity<UserGroup>().HasData(
-        new UserGroup { Id = 1, Name = "شیر" },
-        new UserGroup { Id = 2, Name = "ماست" }
-    );
+
 
     builder.Entity<Consumption>()
     .HasOne(c => c.User)
@@ -37,12 +34,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     .WithMany()
     .HasForeignKey(c => c.ProductId)
     .IsRequired();
-    /*    builder.Entity<Product>().HasData(
-            new Product { Id = 1, Name = "شیر کم‌چرب", GroupId = 1 },
-            new Product { Id = 2, Name = "شیر پرچرب", GroupId = 1 },
-            new Product { Id = 3, Name = "ماست ساده", GroupId = 2 },
-            new Product { Id = 4, Name = "ماست میوه‌ای", GroupId = 2 },
-            new Product { Id = 5, Name = "ماست یونانی", GroupId = 2 }
-        );*/
+
+    builder.Entity<UserGroup>().HasData(
+      new UserGroup { Id = 1, Name = "Milk" },
+      new UserGroup { Id = 2, Name = "Yogurt" }
+    );
+
+    builder.Entity<Product>().HasData(
+        new Product { Id = 1, Name = "Milk1", GroupId = 1 },
+        new Product { Id = 2, Name = "Milk2", GroupId = 1 },
+        new Product { Id = 3, Name = "Yogurt1", GroupId = 2 },
+        new Product { Id = 4, Name = "Yogurt2", GroupId = 2 },
+        new Product { Id = 5, Name = "Yogurt13", GroupId = 2 }
+    );
   }
 }
