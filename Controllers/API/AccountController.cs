@@ -57,6 +57,28 @@ public class AccountController : ControllerBase
     });
   }
 
+  [HttpPost("Register")]
+  public async Task<IActionResult> Register([FromBody] RegisterModel model)
+  {
+    if (!ModelState.IsValid)
+      return BadRequest(ModelState);
+
+    // ایجاد یک کاربر جدید
+    var user = new ApplicationUser
+    {
+      UserName = model.Username,
+      Email = model.Email
+    };
+
+    // اضافه کردن کاربر به دیتابیس
+    var result = await _userManager.CreateAsync(user, model.Password);
+
+    if (!result.Succeeded)
+      return BadRequest(result.Errors);
+
+    return Ok(new { Message = "User registered successfully" });
+  }
+
   // دریافت پروفایل کاربر
   [HttpGet("profile")]
   [Authorize]
