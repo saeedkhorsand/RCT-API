@@ -69,13 +69,15 @@ public class ConsumptionController : ControllerBase
   }
 
   // دریافت تاریخچه مصرف کامل
-  [HttpGet("all")]
-  public async Task<IActionResult> GetAllConsumptions()
+  [HttpPost("all")]
+  public async Task<IActionResult> GetAllConsumptions(ConsumptionRequest request)
   {
     var userId = GetUserId();
 
     var consumptions = await _context.Consumptions
-        .Where(c => c.UserId == userId)
+        .Where(c => c.UserId == userId &&
+                  (c.ConsumptionTime.Date <= request.To ||
+                  c.ConsumptionTime.Date >= request.From))
         .Include(c => c.Product)
         .OrderByDescending(c => c.ConsumptionTime)
         .ToListAsync();
