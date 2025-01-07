@@ -5,7 +5,7 @@ namespace AspnetCoreMvcFull.Models
   public class Consumption
   {
     public int Id { get; set; }
-    public int UserId { get; set; } // کلید خارجی کاربر
+    public string UserId { get; set; } // کلید خارجی کاربر
     public ApplicationUser User { get; set; } // رابطه با کاربر
     public int ProductId { get; set; } // کلید خارجی محصول
     public Product Product { get; set; } // رابطه با محصول
