@@ -24,6 +24,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         new UserGroup { Id = 2, Name = "ماست" }
     );
 
+    builder.Entity<Consumption>()
+    .HasOne(c => c.User)
+    .WithMany()
+    .HasForeignKey(c => c.UserId)
+    .IsRequired();
     /*    builder.Entity<Product>().HasData(
             new Product { Id = 1, Name = "شیر کم‌چرب", GroupId = 1 },
             new Product { Id = 2, Name = "شیر پرچرب", GroupId = 1 },
