@@ -59,6 +59,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Dashboards}/{action=Index}/{id?}");
