@@ -117,11 +117,11 @@ public class ConsumptionController : ControllerBase
   }
 
   // متد کمکی برای گرفتن UserId از JWT
-  private int GetUserId()
+  private Guid GetUserId()
   {
     var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-    if (int.TryParse(userIdClaim, out var userId))
+    if (Guid.TryParse(userIdClaim, out var userId))
     {
       return userId;
     }
