@@ -1,33 +1,41 @@
 @model IEnumerable<AspnetCoreMvcFull.Models.ViewModels.UserViewModel>
 
-<h2>Participants</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Gender</th>
-            <th>Group</th>
-            <th>Locked</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.UserName</td>
-                <td>@user.Email</td>
-                <td>@user.PhoneNumber</td>
-                <td>@user.Gender</td>
-                <td>@user.GroupName</td>
-                <td>@(user.IsLocked ? "Yes" : "No")</td>
-                <td>
-                    <a href="@Url.Action("Edit", new { id = user.Id })" class="btn btn-primary">Edit</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-<a href="@Url.Action("Create")" class="btn btn-success">Add New User</a>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Add New User</a>
+</p>
+
+<div class="card">
+    <h5 class="card-header">Participants</h5>
+    <div class="table-responsive text-nowrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Gender</th>
+                    <th>Group</th>
+                    <th>Locked</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>@user.Gender</td>
+                        <td>@user.GroupName</td>
+                        <td>@(user.IsLocked ? "Yes" : "No")</td>
+                        <td>
+                            <a href="@Url.Action("Edit", new { id = user.Id })" class="btn btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
