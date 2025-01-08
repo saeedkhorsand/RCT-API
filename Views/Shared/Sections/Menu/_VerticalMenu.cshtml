@@ -56,19 +56,19 @@
         </li>
 
         <!-- Pages -->
-        <li class='menu-item@(currentPage.StartsWith("/Pages/Account") ? " active open" : "")'>
+        <li class='menu-item@(currentPage.StartsWith("Participants") ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-user"></i>
                 <div>Participants</div>
             </a>
             <ul class="menu-sub">
-                <li class='menu-item@(currentPage == "/Pages/AccountSettings" ? " active" : "")'>
-                    <a asp-controller="Pages" asp-action="AccountSettings" class="menu-link">
+                <li class='menu-item@(currentPage == "/Participants/Create" ? " active" : "")'>
+                    <a asp-controller="Participants" asp-action="Create" class="menu-link">
                         <div>Add New</div>
                     </a>
                 </li>
-                <li class='menu-item@(currentPage == "/Pages/AccountSettingsNotifications" ? " active" : "")'>
-                    <a asp-controller="Pages" asp-action="AccountSettingsNotifications" class="menu-link">
+                <li class='menu-item@(currentPage == "/Participants/Index" ? " active" : "")'>
+                    <a asp-controller="Participants" asp-action="Index" class="menu-link">
                         <div>Get All</div>
                     </a>
                 </li>
