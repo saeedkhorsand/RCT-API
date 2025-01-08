@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AspnetCoreMvcFull.Models.ViewModels;
 
 namespace AspnetCoreMvcFull.Controllers;
 
@@ -43,20 +44,43 @@ public class AuthController : Controller
     return Ok("User registered successfully.");
   }
 
-  [HttpPost("Login")]
-  public async Task<IActionResult> Login([FromBody] LoginModel model)
+  [HttpPost]
+  public async Task<IActionResult> Login(LoginRequest model)
   {
-    var user = await _userManager.FindByEmailAsync(model.Email);
+    if (!ModelState.IsValid)
+    {
+      return View("LoginBasic", model);
+    }
+    model.RememberMe = true;
+    // Find user by email or username
+    var user = await _userManager.FindByEmailAsync(model.Username)
+               ?? await _userManager.FindByNameAsync(model.Username);
+
     if (user == null)
-      return Unauthorized();
+    {
+      ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+      return View("LoginBasic", model);
+    }
 
-    var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+    // Attempt to sign in
+    var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe ?? false, lockoutOnFailure: false);
 
-    if (!result.Succeeded)
-      return Unauthorized();
+    if (result.Succeeded)
+    {
+      await _signInManager.SignInAsync(user, isPersistent: model.RememberMe ?? false);
+      return RedirectToAction("Index", "Dashboards");
+    }
 
-    var token = GenerateJwtToken(user);
-    return Ok(new { Token = token });
+    if (result.IsLockedOut)
+    {
+      ModelState.AddModelError(string.Empty, "User account locked.");
+    }
+    else
+    {
+      ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+    }
+
+    return View("LoginBasic", model);
   }
 
 
