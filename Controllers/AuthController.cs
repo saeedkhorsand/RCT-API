@@ -8,6 +8,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AspnetCoreMvcFull.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace AspnetCoreMvcFull.Controllers;
 
@@ -51,7 +53,7 @@ public class AuthController : Controller
     {
       return View("LoginBasic", model);
     }
-    model.RememberMe = true;
+
     // Find user by email or username
     var user = await _userManager.FindByEmailAsync(model.Username)
                ?? await _userManager.FindByNameAsync(model.Username);
@@ -67,7 +69,25 @@ public class AuthController : Controller
 
     if (result.Succeeded)
     {
-      await _signInManager.SignInAsync(user, isPersistent: model.RememberMe ?? false);
+      // اضافه کردن اطلاعات کاربر به Claims
+      var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Email, user.Email ?? ""),
+            new Claim("Gender", user.Gender ?? "Not Specified"),
+            new Claim("Group", user.Group?.Name ?? "No Group")
+        };
+
+      var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+      var principal = new ClaimsPrincipal(identity);
+
+      // ذخیره Claims در کوکی
+      await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties
+      {
+        IsPersistent = model.RememberMe ?? false,
+        ExpiresUtc = DateTime.UtcNow.AddHours(12)
+      });
+
       return RedirectToAction("Index", "Dashboards");
     }
 
@@ -107,7 +127,12 @@ public class AuthController : Controller
     return new JwtSecurityTokenHandler().WriteToken(token);
   }
 
-
+  [HttpGet]
+  public async Task<IActionResult> Logout()
+  {
+    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    return RedirectToAction("LoginBasic");
+  }
 
 
   public IActionResult ForgotPasswordBasic() => View();
