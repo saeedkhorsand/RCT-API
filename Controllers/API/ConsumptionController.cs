@@ -32,7 +32,7 @@ public class ConsumptionController : ControllerBase
     var product = await _context.Products.FindAsync(request.ProductId);
     if (product == null)
     {
-      return NotFound("Product not found.");
+      return NotFound(new ResultViewModel("Product not found.", false));
     }
 
     var consumption = new Consumption
@@ -46,7 +46,7 @@ public class ConsumptionController : ControllerBase
     _context.Consumptions.Add(consumption);
     await _context.SaveChangesAsync();
 
-    return Ok("Consumption added successfully.");
+    return Ok(new ResultViewModel("Consumption added successfully.", false));
   }
 
   // دریافت تاریخچه مصرف روز جاری
@@ -102,13 +102,13 @@ public class ConsumptionController : ControllerBase
 
     if (consumption == null)
     {
-      return NotFound("Consumption record not found.");
+      return NotFound(new ResultViewModel("Consumption record not found.", false));
     }
 
     var threeDaysAgo = DateTime.Today.AddDays(-3);
     if (consumption.ConsumptionTime.Date < threeDaysAgo)
     {
-      return BadRequest("You can only update consumption records from the last three days.");
+      return BadRequest(new ResultViewModel("You can only update consumption records from the last three days.", false));
     }
 
     consumption.Quantity = request.Quantity;
@@ -117,7 +117,7 @@ public class ConsumptionController : ControllerBase
     _context.Consumptions.Update(consumption);
     await _context.SaveChangesAsync();
 
-    return Ok("Consumption updated successfully.");
+    return Ok(new ResultViewModel("Consumption updated successfully."));
   }
 
   // متد کمکی برای گرفتن UserId از JWT
