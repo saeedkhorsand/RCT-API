@@ -1,6 +1,7 @@
 using AspnetCoreMvcFull.Core.Context;
 using AspnetCoreMvcFull.Models;
 using AspnetCoreMvcFull.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class ConsumptionController : ControllerBase
 {
   private readonly ApplicationDbContext _context;
@@ -62,7 +63,7 @@ public class ConsumptionController : ControllerBase
 
     if (!consumptions.Any())
     {
-      return NotFound("No consumption records found for today.");
+      return Ok(new List<Consumption>());
     }
 
     return Ok(consumptions);
@@ -84,7 +85,7 @@ public class ConsumptionController : ControllerBase
 
     if (!consumptions.Any())
     {
-      return NotFound("No consumption records found.");
+      return Ok(new List<Consumption>());
     }
 
     return Ok(consumptions);
