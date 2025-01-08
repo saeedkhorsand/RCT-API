@@ -34,13 +34,13 @@ public class AccountController : ControllerBase
     var user = await _userManager.FindByNameAsync(request.Username);
     if (user == null)
     {
-      return Unauthorized("Invalid username or password.");
+      return Unauthorized(new ResultViewModel("Invalid username or password.",false));
     }
 
     var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
     if (!result.Succeeded)
     {
-      return Unauthorized("Invalid username or password.");
+      return Unauthorized(new ResultViewModel("Invalid username or password.", false));
     }
 
     var accessToken = GenerateJwtToken(user);
@@ -61,7 +61,7 @@ public class AccountController : ControllerBase
   public async Task<IActionResult> Register([FromBody] RegisterModel model)
   {
     if (!ModelState.IsValid)
-      return BadRequest(ModelState);
+      return BadRequest(new ResultViewModel(ModelState));
 
     // ایجاد یک کاربر جدید
     var user = new ApplicationUser
@@ -74,9 +74,9 @@ public class AccountController : ControllerBase
     var result = await _userManager.CreateAsync(user, model.Password);
 
     if (!result.Succeeded)
-      return BadRequest(result.Errors);
+      return BadRequest(new ResultViewModel(result));
 
-    return Ok(new { Message = "User registered successfully" });
+    return Ok(new ResultViewModel("User registered successfully"));
   }
 
   // دریافت پروفایل کاربر
@@ -91,7 +91,7 @@ public class AccountController : ControllerBase
 
     if (user == null)
     {
-      return NotFound("User not found.");
+      return NotFound(new ResultViewModel("User not found.",false));
     }
 
     return Ok(new
@@ -111,7 +111,7 @@ public class AccountController : ControllerBase
     var user = await _userManager.Users.FirstOrDefaultAsync(u => u.SecurityStamp == request.RefreshToken);
     if (user == null)
     {
-      return Unauthorized("Invalid refresh token.");
+      return Unauthorized(new ResultViewModel("Invalid refresh token.",false));
     }
 
     var accessToken = GenerateJwtToken(user);
