@@ -17,7 +17,11 @@ namespace AspnetCoreMvcFull.ValidationMiddleware
     {
       // ذخیره جریان اصلی پاسخ
       var originalBodyStream = context.Response.Body;
-
+      var options = new JsonSerializerOptions
+      {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true 
+      };
       using (var responseBody = new MemoryStream())
       {
         context.Response.Body = responseBody;
@@ -39,7 +43,7 @@ namespace AspnetCoreMvcFull.ValidationMiddleware
             // بازنشانی پاسخ
             context.Response.ContentType = "application/json";
             context.Response.Body = originalBodyStream;
-            await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new ResultViewModel(errorResponse)));
+            await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new ResultViewModel(errorResponse), options));
             return;
           }
         }
