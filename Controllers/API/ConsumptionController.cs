@@ -28,17 +28,22 @@ public class ConsumptionController : ControllerBase
   public async Task<IActionResult> AddConsumption([FromBody] AddConsumptionRequest request)
   {
     var userId = GetUserId();
-
+    
     var product = await _context.Products.FindAsync(request.ProductId);
     if (product == null)
     {
       return NotFound(new ResultViewModel("Product not found.", false));
     }
 
+    var user = _context
+      .Users
+      .Include(u=>u.Product)
+      .FirstOrDefault(u=>u.Id == userId);
+
     var consumption = new Consumption
     {
       UserId = userId,
-      ProductId = request.ProductId ?? 0,
+      ProductId = user!.ProductId ?? 0,
       ConsumptionTime = request.ConsumptionTime,
       Quantity = request.Quantity,
       Dsc = request.Dsc,
@@ -119,6 +124,32 @@ public class ConsumptionController : ControllerBase
     await _context.SaveChangesAsync();
 
     return Ok(new ResultViewModel("Consumption updated successfully."));
+  }
+
+
+  [HttpDelete("remove/{id}")]
+  public async Task<IActionResult> RemoveConsumption(int id)
+  {
+    var userId = GetUserId();
+
+    var consumption = await _context.Consumptions
+        .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+
+    if (consumption == null)
+    {
+      return NotFound(new ResultViewModel("Consumption record not found.", false));
+    }
+
+    var threeDaysAgo = DateTime.Today.AddDays(-3);
+    if (consumption.ConsumptionTime.Date < threeDaysAgo)
+    {
+      return BadRequest(new ResultViewModel("You can only update consumption records from the last three days.", false));
+    }
+
+    _context.Consumptions.Remove(consumption);
+    await _context.SaveChangesAsync();
+
+    return Ok(new ResultViewModel("Consumption removed successfully."));
   }
 
   // متد کمکی برای گرفتن UserId از JWT
