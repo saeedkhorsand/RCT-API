@@ -1,5 +1,6 @@
 using AspnetCoreMvcFull.Core.Context;
 using AspnetCoreMvcFull.Models.User;
+using AspnetCoreMvcFull.ValidationMiddleware;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
@@ -103,7 +104,7 @@ app.UseRouting();
 // استفاده از احراز هویت و مجوزها
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseMiddleware<ValidationMiddleware>();
 // اجرای مایگریشن پایگاه داده (اختیاری)
 using (var scope = app.Services.CreateScope())
 {
