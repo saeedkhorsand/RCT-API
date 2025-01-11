@@ -23,6 +23,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     // Seed Data
 
+    builder.Entity<ApplicationUser>()
+      .HasOne(c => c.Product)
+      .WithMany()
+      .HasForeignKey(c => c.ProductId);
 
     builder.Entity<Consumption>()
     .HasOne(c => c.User)
