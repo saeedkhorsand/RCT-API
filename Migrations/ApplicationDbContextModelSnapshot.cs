@@ -36,6 +36,9 @@ namespace AspnetCoreMvcFull.Migrations
                     b.Property<DateTime>("ConsumptionTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Dsc")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
