@@ -40,13 +40,14 @@ public class ConsumptionController : ControllerBase
       UserId = userId,
       ProductId = request.ProductId ?? 0,
       ConsumptionTime = request.ConsumptionTime,
-      Quantity = request.Quantity
+      Quantity = request.Quantity,
+      Dsc = request.Dsc,
     };
 
     _context.Consumptions.Add(consumption);
     await _context.SaveChangesAsync();
 
-    return Ok(new ResultViewModel("Consumption added successfully.", false));
+    return Ok(new ResultViewModel("Consumption added successfully.", true));
   }
 
   // دریافت تاریخچه مصرف روز جاری
@@ -77,7 +78,7 @@ public class ConsumptionController : ControllerBase
 
     var consumptions = await _context.Consumptions
         .Where(c => c.UserId == userId &&
-                  (c.ConsumptionTime.Date <= request.To ||
+                  (c.ConsumptionTime.Date <= request.To &&
                   c.ConsumptionTime.Date >= request.From))
         .Include(c => c.Product)
         .OrderByDescending(c => c.ConsumptionTime)
