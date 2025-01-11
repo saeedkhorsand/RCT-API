@@ -56,7 +56,7 @@
         </li>
 
         <!-- Pages -->
-        <li class='menu-item@(currentPage.StartsWith("Participants") ? " active open" : "")'>
+        <li class='menu-item@(currentPage.Contains("Participants") ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-user"></i>
                 <div>Participants</div>
@@ -104,8 +104,8 @@
         <!-- Components -->
         <li class="menu-header small text-uppercase"><span class="menu-header-text">Consumptions</span></li>
         <!-- Cards -->
-        <li class='menu-item@(currentPage == "/Cards/Basic" ? " active" : "")'>
-            <a asp-controller="Cards" asp-action="Basic" class="menu-link">
+        <li class='menu-item@(currentPage == "Consumptions/index" ? " active" : "")'>
+            <a asp-controller="Consumptions" asp-action="index" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-collection"></i>
                 <div class="text-truncate" data-i18n="Cards">Consumptions</div>
             </a>
