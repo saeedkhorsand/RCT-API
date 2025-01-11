@@ -26,6 +26,12 @@ public class AuthController : Controller
     _configuration = configuration;
   }
 
+  [HttpGet]
+  [Route("Account/Login")]
+  public ActionResult Login()
+  {
+    return RedirectToAction("LoginBasic","Auth");
+  }
 
   [HttpPost("Register")]
   public async Task<IActionResult> Register([FromBody] RegisterModel model)
