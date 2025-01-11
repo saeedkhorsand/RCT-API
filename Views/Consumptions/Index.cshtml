@@ -1,0 +1,141 @@
+@model IEnumerable<Consumption>
+
+@{
+    ViewData["Title"] = "Consumption List";
+}
+
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-6">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Filters</h5> <small class="text-body float-end">Row Count : @(Model.Count())</small>
+            </div>
+            <div class="card-body">
+                <form method="get">
+                    <div class="row mb-4">
+                        <!-- فیلتر کاربر -->
+                        <div class="col-md-3">
+                            <label for="userId" class="form-label">User</label>
+                            <select id="userId" name="userId" class="form-select">
+                                <option value="">Select User</option>
+                                @foreach (var user in ViewBag.Users)
+                                {
+                                    if (user.Id == (ViewBag.FilterUserId as string))
+                                    {
+                                        <option value="@user.Id" selected>
+                                            @user.UserName
+                                        </option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@user.Id">
+                                            @user.UserName
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <!-- فیلتر گروه -->
+                        <div class="col-md-3">
+                            <label for="groupId" class="form-label">Group</label>
+                            <select id="groupId" name="groupId" class="form-select">
+                                <option value="">Select Group</option>
+                                @foreach (var group in ViewBag.Groups)
+                                {
+                                    if (group.Id == (ViewBag.FilterGroupId as int?))
+                                    {
+                                        <option value="@group.Id" selected>
+                                            @group.Name
+                                        </option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@group.Id">
+                                            @group.Name
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <!-- فیلتر محصول -->
+                        <div class="col-md-3">
+                            <label for="productId" class="form-label">Product</label>
+                            <select id="productId" name="productId" class="form-select">
+                                <option value="">Select Product</option>
+                                @foreach (var product in ViewBag.Products)
+                                {
+                                    if (product.Id == (ViewBag.FilterProductId as int?))
+                                    {
+                                        <option value="@product.Id" selected>
+                                            @product.Name
+                                        </option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@product.Id">
+                                            @product.Name
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <!-- تاریخ از -->
+                        <div class="col-md-3">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" id="startDate" name="startDate" class="form-control" value="@ViewBag.FilterStartDate" />
+                        </div>
+
+                        <!-- تاریخ تا -->
+                        <div class="col-md-3 mt-3">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" id="endDate" name="endDate" class="form-control" value="@ViewBag.FilterEndDate" />
+                        </div>
+
+                        <!-- دکمه جستجو -->
+                        <div class="col-md-3 mt-3">
+                            <button type="submit" class="btn btn-primary mt-4">Search</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <h5 class="card-header">Consumptions</h5>
+    <div class="table-responsive text-nowrap">
+
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Group</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Consumption Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var consumption in Model)
+                {
+                    <tr>
+                        <td>@consumption.User.UserName</td>
+                        <td>@consumption.User.Group?.Name</td>
+                        <td>@consumption.Product.Name</td>
+                        <td>@consumption.Quantity</td>
+                        <td>@consumption.ConsumptionTime.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>
+                            <a href="@Url.Action("Edit", new { id = consumption.Id })" class="btn btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
