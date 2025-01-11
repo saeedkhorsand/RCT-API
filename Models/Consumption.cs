@@ -11,5 +11,6 @@ namespace AspnetCoreMvcFull.Models
     public Product Product { get; set; } // رابطه با محصول
     public DateTime ConsumptionTime { get; set; } // تاریخ و ساعت مصرف
     public double Quantity { get; set; } // مقدار مصرف (مثلاً به میلی‌لیتر یا گرم)
+    public string? Dsc { get; set; }
   }
 }
