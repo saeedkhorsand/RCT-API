@@ -1,5 +1,6 @@
 using AspnetCoreMvcFull.Models.User;
 using AspnetCoreMvcFull.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -81,7 +82,7 @@ public class AccountController : ControllerBase
 
   // دریافت پروفایل کاربر
   [HttpGet("profile")]
-  [Authorize]
+  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
   public async Task<IActionResult> GetProfile()
   {
     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -100,7 +101,11 @@ public class AccountController : ControllerBase
       user.UserName,
       user.Email,
       user.Gender,
-      Group = user.Group?.Name
+      Group = new
+      {
+        Id = user.Group?.Id,
+        Name = user.Group?.Name,
+      }
     });
   }
 
